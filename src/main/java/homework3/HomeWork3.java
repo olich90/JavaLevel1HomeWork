@@ -1,12 +1,13 @@
 package homework3;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class HomeWork3 {
     public static void main(String[] args) {
         /* 1 */
-        guessTheNumber();
+        //guessTheNumber();
         /* 2 */
         guessTheWord();
     }
@@ -59,7 +60,7 @@ public class HomeWork3 {
         Scanner scan = new Scanner(System.in);
         String systemWord;
         String enteredWord;
-        StringBuilder mask = new StringBuilder();
+        String mask = "";
         int posSysWord;
         String[] words = {"apple", "orange", "lemon", "banana", "apricot", "avocado", "broccoli", "carrot", "cherry", "garlic",
                 "grape", "melon", "leak", "kiwi", "mango", "mushroom", "nut", "olive", "pea", "peanut", "pear", "pepper", "pineapple", "pumpkin", "potato"};
@@ -70,22 +71,21 @@ public class HomeWork3 {
             System.out.println("Угадайте слово из списка: " + Arrays.toString(words));
             System.out.print("Введите слово: ");
             enteredWord = scan.nextLine(); // сохраним введенное слово
-            if (enteredWord.equals(systemWord)) { // если слова равны - конец игры
+            if (enteredWord.toLowerCase().equals(systemWord)) { // если слова равны - конец игры
                 System.out.println("Верно! Игра окончена.");
                 break;
             } else {
                 System.out.println("Неверно");
                 int i = 0;
                 do {
-                    if (systemWord.charAt(i) == enteredWord.charAt(i)) { // сравним слова итерационно посимвольно
-                        mask.append(systemWord.charAt(i)); // нарастим маску совпавшими буквами
-                    } else
-                        break; // если первые буквы не равны, то нет смысла сравнивать остальные, прерываем вложенный цикл
+                    if (systemWord.charAt(i) == enteredWord.toLowerCase().charAt(i)) { // сравним слова итерационно посимвольно
+                        mask += systemWord.charAt(i);
+                    } else mask += "#";
                     i++;
                 } while (i < enteredWord.length() && i < systemWord.length()); // выполнять сравнение пока не пройдемся по всем буквам одного из слов
                 if (mask.length() > 0)
                     System.out.println(mask + "#############"); // если маска не пуста - распечатаем ее
-                mask = new StringBuilder();
+                mask = "";
             }
         } while (true);
     }
