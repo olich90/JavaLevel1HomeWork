@@ -52,6 +52,8 @@ public class GameMap extends JPanel {
         initialized = false;
     }
 
+    int gameMode = 0;
+
     private void update(MouseEvent e) {
         if (isGameOver || !initialized) return;
 
@@ -61,7 +63,14 @@ public class GameMap extends JPanel {
         field[cellY][cellX] = DOT_HUMAN;
         repaint();
         if (gameCheck(DOT_HUMAN, STATE_WIN_HUMAN)) return;
-        aiTurn();
+
+        // 3. *Сделать второй режим на 2х игроков
+        if (gameMode == 1) {
+            if (!isCellValid(cellY, cellX) || !isCellEmpty(cellY, cellX)) return;
+            field[cellY][cellX] = DOT_AI;
+        } else {
+            aiTurn();
+        }
         repaint();
         if (gameCheck(DOT_AI, STATE_WIN_AI)) return;
     }
@@ -119,6 +128,7 @@ public class GameMap extends JPanel {
         this.fieldSizeX = fieldSize;
         this.fieldSizeY = fieldSize;
         this.winLength = winLength;
+        this.gameMode = gameMode;
         field = new int[fieldSizeY][fieldSizeX];
         initialized = true;
         isGameOver = false;
@@ -127,19 +137,29 @@ public class GameMap extends JPanel {
     }
 
     private void showMessageGameOver(Graphics g) {
+        // 2. *Сделать нормальный вывод сообщения о победе
         g.setColor(Color.DARK_GRAY);
-        g.fillRect(0,250, getWidth(), 100);
+        g.fillRect(0, getWidth() / 2 - 60, getWidth(), 80);
         g.setColor(Color.YELLOW);
         g.setFont(new Font("TimesNewRoman", Font.BOLD, 60));
+        String printWin1 = "", printWin2 = "";
+        int i = 5;
+        if (gameMode == 1) {
+            printWin1 = "_1";
+            printWin2 = "HUMAN_2";
+            i = 8;
+        } else {
+            printWin2 = "AI";
+        }
         switch (stateGameOver) {
             case STATE_DRAW:
-                g.drawString("DRAW", 200, getHeight() / 2 - 30);
+                g.drawString("DRAW", getWidth() / i, getHeight() / 2);
                 break;
             case STATE_WIN_HUMAN:
-                g.drawString("HUMAN Wins!", 200, getHeight()/ 2 - 30);
+                g.drawString("HUMAN " + printWin1 + " Wins!", getWidth() / i, getHeight() / 2);
                 break;
             case STATE_WIN_AI:
-                g.drawString("AI Wins!", 200, getHeight()/ 2 - 30);
+                g.drawString(printWin2 + " Wins!", getWidth() / i, getHeight() / 2);
                 break;
         }
     }
